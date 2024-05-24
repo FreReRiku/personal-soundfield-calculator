@@ -30,3 +30,6 @@ Temporary Items
 
 # figureディレクトリを監視から逃れるようにする
 /figures/
+
+# srcディレクトリの中にある__pycache__ディレクトリを監視から逃れられるようにする。
+/src/__pycache__/
