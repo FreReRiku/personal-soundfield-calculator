@@ -464,7 +464,7 @@ ax1 = fig.add_subplot(1, 1, 1)
 ax1.plot(emb_frame, dte_log,label='Distance Estimation Error')
 ax1.set_ylim([-0.05,0.7])
 ax1.set_xlabel("Embedding frame[frame]", fontname="Arial")
-ax1.set_ylabel("距離推定誤差[m]", fontname="Arial")
+ax1.set_ylabel("Distance Estimation Error [m]", fontname="Arial")
 
 ax2 = ax1.twinx()
 ax2.plot(emb_frame, pesq_log, 'r', label='PESQ')
