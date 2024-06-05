@@ -419,7 +419,7 @@ ax1.plot(emb_amp, dte_log, label='Distance Estimation Error')
 ax1.set_xlim([-0.05,1.0])
 ax1.set_ylim([-0.05,1.75])
 ax1.set_xlabel("Embedding amplitude", fontname="Arial")
-ax1.set_ylabel("距離推定誤差[m]", fontname="Arial")
+ax1.set_ylabel("Distance Estimation Error [m]", fontname="Arial")
 
 ax2 = ax1.twinx()
 ax2.plot(emb_amp, pesq_log, 'r', label='PESQ')
