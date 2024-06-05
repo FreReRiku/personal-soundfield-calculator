@@ -49,11 +49,11 @@ for f in emb_frame:
         オーディオファイルの読み込み
     ---------------'''
     # ファイル名
-    file_name_impulse1  = 'impulse_mic1_ch1.wav'
-    file_name_impulse2  = 'impulse_mic1_ch2.wav'
-    file_name_origin    = 'music1_mono.wav'
-    file_name_received1 = 'music1_room_seed1.wav'
-    file_name_received2 = 'music1_room_seed1234.wav'
+    file_name_impulse1  = '../wav_data/impulse_mic1_ch1.wav'
+    file_name_impulse2  = '../wav_data/impulse_mic1_ch2.wav'
+    file_name_origin    = '../wav_data/music1_mono.wav'
+    file_name_received1 = '../wav_data/music1_room_seed1.wav'
+    file_name_received2 = '../wav_data/music1_room_seed1234.wav'
     # 読み込み
     h1, _   = sf.read(file_name_impulse1)
     h2, _   = sf.read(file_name_impulse2)
