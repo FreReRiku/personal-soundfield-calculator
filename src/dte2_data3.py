@@ -423,7 +423,7 @@ ax1 = fig.add_subplot(1, 1, 1)
 ax1.plot(emb_bin, dte_log,label='Distance Estimation Error')
 ax1.set_ylim([-0.05,1.4])
 ax1.set_xlabel("Embedding rate of frequency bin [%]", fontname="Arial")
-ax1.set_ylabel("距離推定誤差[m]", fontname="Arial")
+ax1.set_ylabel("Distance Estimation Error [m]", fontname="Arial")
 
 ax2 = ax1.twinx()
 ax2.plot(emb_bin, pesq_log, 'r', label='PESQ')
