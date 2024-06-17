@@ -13,21 +13,21 @@ def device_info():
         out_ltc = []
         input_info[hostapi_name]    = {"id":[], "name": [], "ch":[]}
         output_info[hostapi_name]   = {"id":[], "name": [], "ch":[]}
-        for device_numbar in hostapi["devices"]:
-            device = sd.query_devices(device=device_numbar)
+        for device_number in hostapi["devices"]:
+            device = sd.query_devices(device=device_number)
             max_in_ch  = device["max_input_channels"]
             max_out_ch = device["max_output_channels"]
 
             if max_in_ch > 0:
                 input_info[hostapi_name]["name"].append(device['name'])
                 input_info[hostapi_name]["ch"].append(max_in_ch)
-                input_info[hostapi_name]["id"].append(device_numbar)
+                input_info[hostapi_name]["id"].append(device_number)
                 in_ltc.append(device["default_low_input_latency"])
 
             if max_out_ch > 0:
                 output_info[hostapi_name]["name"].append(device['name'])
                 output_info[hostapi_name]["ch"].append(max_out_ch)
-                output_info[hostapi_name]["id"].append(device_numbar)
+                output_info[hostapi_name]["id"].append(device_number)
                 out_ltc.append(device["default_low_output_latency"])
 
         # Driver Info
