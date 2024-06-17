@@ -1,6 +1,5 @@
 import sounddevice as sd
 import numpy as np
-import sys
 import soundfile as sf
 import threading
 from numpy.fft import rfft, irfft
@@ -17,8 +16,8 @@ class Audio_Player(threading.Thread):
         self.block_n = blocksize    # ブロックサイズ
         self.id = device            # デバイスID (入力，出力)
         # チャンネル数 (入力，出力 デフォルトは2)
-        self.in_ch = 2 if in_ch is None else in_ch      # 入力
-        self.out_ch = 2 if out_ch is None else out_ch   # 出力
+        self.in_ch = in_ch or 2     # 入力 in_ch が None あるいは 0 のとき 2 を代入する
+        self.out_ch = out_ch or 2   # 出力
 
     def callback(self, indata, outdata, frames, time, status):
 
