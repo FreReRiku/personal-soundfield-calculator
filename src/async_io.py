@@ -1,3 +1,9 @@
+'''
+async_io.py
+
+The program uses an audio device of your choice to record audio and play it back in real time.
+'''
+
 import sounddevice as sd
 import numpy as np
 import soundfile as sf
@@ -12,7 +18,7 @@ class Audio_Player(threading.Thread):
         super(Audio_Player, self).__init__()
 
         # パラメータの設定
-        self.sr = sr                # サンプリング周波数
+        self.sr = sr                # サンプリング周波数(Sampling_Rate)
         self.block_n = blocksize    # ブロックサイズ
         self.id = device            # デバイスID (入力，出力)
         # チャンネル数 (入力，出力 デフォルトは2)
