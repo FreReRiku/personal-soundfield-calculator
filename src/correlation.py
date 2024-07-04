@@ -1,3 +1,15 @@
+'''
+correlation.py
+
+What can we find out in this program?
+
+Three audio files are read in, the cross-correlation between two of the audio data is calculated and the results are plotted.
+
+Make graph
+
+- Correlation
+'''
+
 import matplotlib.pyplot as plt
 import numpy as np
 import soundfile as sf
@@ -26,5 +38,8 @@ ax1.plot(h)
 #ax1.plot(c)
 ax1.plot(c[len(c)//2:]/np.max(c))
 #plt.vlines(np.argmax(s_)*dt, ymin=-1, ymax=1, colors='r', label='True Position')
+ax1.set_xlabel('Samples')
+ax1.set_ylabel('Amplitude')
+plt.savefig('../figures/correlation/Correlation.svg')
 
 plt.show()
