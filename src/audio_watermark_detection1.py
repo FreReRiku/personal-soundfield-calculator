@@ -1,10 +1,19 @@
-"""
-    オーディオ透かしの検知
-    from Y. Nakashima et. al., "Indoor Positioning System Using Digital AudioWatermarking," IEICE Trans., vol.E.94-D, no.11, Nov. 2011.
-"""
+# オーディオ透かしの検知: from Y. Nakashima et. al., "Indoor Positioning System Using Digital AudioWatermarking," IEICE Trans., vol.E.94-D, no.11, Nov. 2011.
+'''
+audio_watermark_detection.py
+
+What can we find out in this program?
+
+Calculate
+- Mean time of arrival estimation error
+- Mean distance estimation error
+
+Make graph
+- Correlation value
+'''
 
 '''---------------
-    インポート
+インポート
 ---------------'''
 import numpy as np
 # 信号処理関係
@@ -21,13 +30,13 @@ from settings import *
 from scipy.signal import find_peaks
 
 '''---------------
-    疑似乱数のseed値
+疑似乱数のseed値
 ---------------'''
 # seed値
 seed = 1234
 
 '''---------------
-    オーディオデータ読み込み
+オーディオデータ読み込み
 ---------------'''
 #単一音源音声 (直接音源)
 #z, fs = sf.read('music1_embedded_seed{0}.wav'.format(seed))
@@ -37,7 +46,7 @@ z, fs = sf.read('../wav_data/music1_room_seed{0}.wav'.format(seed))
 #z, fs = sf.read('music1_room_seed{0}&{1}.wav'.format(seeds[0], seeds[1]))
 
 '''---------------
-    パラメータ(一意に決まるもの)
+パラメータ(一意に決まるもの)
 ---------------'''
 # 周波数閾値
 f_th = np.floor(N * TH / fs).astype(int)  # 周波数ビンに変換
@@ -52,7 +61,7 @@ Nn = (Wn - 1) * S + N
 Peak_period = Wn * S
 
 '''---------------
-    事前準備
+事前準備
 ---------------'''
 # ⊿i の範囲
 i_range = 20000
@@ -101,7 +110,7 @@ print(peak)
 # 時間軸
 time = np.arange(0,i_range,delta)/fs
 '''---------
-  推定誤差
+推定誤差
 ---------'''
 c     = 340.29    # 音速 [m/s]
 error = 84
@@ -112,7 +121,7 @@ print('平均距離推定誤差: {0:.2f} [m]'.format(delay_time_error * c))  # �
 print('')
 
 '''---------------
-    表示系
+表示系
 ---------------'''
 # seed=1234の真のピーク位置
 x = np.arange(305, i_range, Peak_period - 1)/fs
@@ -127,7 +136,7 @@ plt.ylabel("Correlation Value", fontname="Arial")
 plt.xlim([0,200])
 plt.legend(loc="lower right")
 
-plt.savefig('Correlation.svg')
+plt.savefig('../figures/audio_watermark_detection1/Correlation.svg')
 
 plt.show()
 
