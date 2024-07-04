@@ -1,10 +1,18 @@
-"""
-    オーディオ透かしの検知
-    from Y. Nakashima et. al., "Indoor Positioning System Using Digital AudioWatermarking," IEICE Trans., vol.E.94-D, no.11, Nov. 2011.
-"""
+# オーディオ透かしの検知: from Y. Nakashima et. al., "Indoor Positioning System Using Digital AudioWatermarking," IEICE Trans., vol.E.94-D, no.11, Nov. 2011.
+
+'''
+audio_watermark_detection2.py
+
+What can we find out in this program?
+
+Calculate
+- Peak position by detection
+Make graph
+- Correlation value
+'''
 
 '''---------------
-    インポート
+インポート
 ---------------'''
 import numpy as np
 # 信号処理関係
@@ -21,23 +29,23 @@ from settings import *
 from scipy.signal import find_peaks
 
 '''---------------
-    疑似乱数のseed値
+疑似乱数のseed値
 ---------------'''
 # seed値
 seed = 1
 
 '''---------------
-    オーディオデータ読み込み
+オーディオデータ読み込み
 ---------------'''
 #単一音源音声 (直接音源)
 #z, fs = sf.read('music1_embedded_seed{0}.wav'.format(seed))
 # 単一音源音声 (部屋再生)
-z, fs = sf.read('music1_room_seed{0}.wav'.format(seed))
+z, fs = sf.read('../wav_data/music1_room_seed{0}.wav'.format(seed))
 # 複数音源-混合音声 (部屋再生)
 #z, fs = sf.read('music1_room_seed{0}&{1}.wav'.format(seeds[0], seeds[1]))
 
 '''---------------
-    パラメータ(一意に決まるもの)
+パラメータ(一意に決まるもの)
 ---------------'''
 # 周波数閾値
 f_th = np.floor(N * TH / fs).astype(int)  # 周波数ビンに変換
@@ -52,7 +60,7 @@ Nn = (Wn - 1) * S + N
 Peak_period = Wn * S
 
 '''---------------
-    事前準備
+事前準備
 ---------------'''
 # ⊿i の範囲
 i_range = 20000
@@ -64,7 +72,7 @@ win_t = sg.windows.hann(N)  # sin窓(=Hanning窓)の準備
 wc = presudo_random(Hb, Wb, 1, 1, seed=seed)
 
 '''---------------
-    検知
+検知
 ---------------'''
 sc_array = []
 for i in range(0, i_range, delta):  # ⊿=8個飛ばし
@@ -100,14 +108,17 @@ print(peak[0])
 # 時間軸
 time = list(range(0, i_range, delta))
 '''---------------
-    表示系
+表示系
 ---------------'''
 x = list(range(341, i_range, Peak_period - 1))
 
 plt.figure()
 plt.vlines(x, ymin=-0.3, ymax=0.3, colors='r', label='True Position')
 plt.plot(time, sc_array, label='Correlation')
-plt.xlabel("時間[sample]", fontname="Arial", fontsize=24)
-plt.ylabel("相関値", fontname="Arial", fontsize=24)
+plt.xlabel("Time[sample]", fontname="Arial")
+plt.ylabel("Correlation value", fontname="Arial")
 plt.legend(loc="lower right")
+
+plt.savefig('../figures/audio_watermark_detection2/Correlation.svg')
+
 plt.show()
