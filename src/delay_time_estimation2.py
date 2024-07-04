@@ -3,12 +3,6 @@ delay_time_estimation2.py
 
 What can we find out in this program?
 
-Calculate
-- the distance between the microphone and speaker and the arrival time
-- the estimation error
-- peak ratio(PR)
-- sound quality (PESQ, SNR)
-
 Make graph
 - Cross-Correlation using some frequency components
 - CSP using some frequency components
