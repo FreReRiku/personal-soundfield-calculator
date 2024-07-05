@@ -1,5 +1,5 @@
 '''
-delay_time_estimation2.py
+delay_time_estimation3.py
 
 What can we find out in this program?
 
@@ -7,7 +7,6 @@ Calculate
 - the distance between the microphone and speaker and the arrival time
 - the estimation error
 - peak ratio(PR)
-- sound quality (PESQ, SNR)
 
 Make graph
 - CSP1(without embedding)
@@ -282,7 +281,7 @@ for p, c in zip(pos_imp, ['r', 'g']):
     plt.axvline(p/fs, color=c, linestyle='--')
 plt.plot(t, h[:N])
 
-plt.savefig('impulse.svg')
+plt.savefig('../figures/delay_time_estimation3/impulse.svg')
 
 #-------------------------
 # 平均CSPのプロット
@@ -326,6 +325,6 @@ ax3.set_xlim([t[0], t[-1]])
 _, y_max = ax3.get_ylim()
 ax3.set_ylim([0, y_max])
 
-plt.savefig('CSP.svg')
+plt.savefig('../figures/delay_time_estimation3/CSP.svg')
 
 plt.show()
