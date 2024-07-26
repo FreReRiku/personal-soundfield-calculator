@@ -1,3 +1,10 @@
+'''
+device_info.py
+
+This program obtains sound device info, and stores the name of the device and the number of channels as type "dict".
+This program does not display anything.
+'''
+
 import sounddevice as sd
 import numpy as np
 
