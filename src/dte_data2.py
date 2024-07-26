@@ -1,3 +1,13 @@
+'''
+dte_data2.py
+
+Overview
+
+Calculate
+
+Make Graph
+
+'''
 import librosa
 import matplotlib.pyplot as plt
 import numpy as np
