@@ -32,4 +32,4 @@ Temporary Items
 /figures/
 
 # srcディレクトリの中にある__pycache__ディレクトリを監視から逃れられるようにする。
-/src/__pycache__/
+/**/__pycache__/
