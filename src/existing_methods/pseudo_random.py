@@ -5,7 +5,7 @@ import scipy.ndimage.filters as flt
 from scipy.fft import fft, ifft 
 import matplotlib.pyplot as plt
 
-def presudo_random(hb, wb, ht, wt, seed=1234):
+def pseudo_random(hb, wb, ht, wt, seed=1234):
     rg_mt = Generator(PCG64(seed=seed))
 
     # タイルごとの疑似乱数配列を作成     (式(4)の一部)
