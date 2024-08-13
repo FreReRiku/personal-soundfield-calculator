@@ -17,8 +17,8 @@ import librosa as lb
 import matplotlib.pyplot as plt
 # オーディオ関係
 import soundfile as sf
-from Perceived_Human_Hearing import Hearing_Threshold
-from presudo_random import *
+from perceived_human_hearing import Hearing_Threshold
+from pseudo_random import *
 # パラメータは settings.py から読み込む
 from settings import *
 
@@ -26,10 +26,7 @@ from settings import *
     オーディオデータ読み込み
 ---------------'''
 ''''''
-file_name = 'music2_mono.wav'
-if not os.path.isfile(file_name):
-    url = 'https://github.com/Shimamura-Lab-SU/Sharing-Knowledge-Database/blob/master/python_exercise/music1.wav?raw=true'  # Githubでrawデータを扱うためのurl
-    urllib.request.urlretrieve(url, file_name)  # 音楽ファイル
+file_name = './../../sound_data/music2_mono.wav'
 
 x, fs = sf.read(file_name)
 if np.array(x).ndim == 2:
@@ -73,7 +70,7 @@ for seed in seeds:
         seedごとに疑似乱数を生成
     ---------------'''
     # 乱数配列を作成し，縦にHt個，横にWt個拡張する
-    wc = presudo_random(Hb, Wb, Ht, Wt, seed=seed)
+    wc = pseudo_random(Hb, Wb, Ht, Wt, seed=seed)
 
     # signの計算   (式(4))
     sign = np.multiply(np.tile(m[np.newaxis, :], (Hb * Ht, 1)), wc)
