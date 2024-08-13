@@ -29,7 +29,12 @@ Temporary Items
 *.svg
 
 # figureディレクトリを監視から逃れるようにする
-/figures/
+/**/figures/
 
 # srcディレクトリの中にある__pycache__ディレクトリを監視から逃れられるようにする。
 /**/__pycache__/
+
+# 使用する音源データ以外のファイルを除外
+/sound_data/
+!/sound_data/music1_mono.wav
+!/sound_data/music2_mono.wav
