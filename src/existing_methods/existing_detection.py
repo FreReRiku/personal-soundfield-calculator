@@ -15,7 +15,7 @@ import librosa as lb
 import matplotlib.pyplot as plt
 # オーディオ関係
 import soundfile as sf
-from presudo_random import presudo_random
+from pseudo_random import pseudo_random
 # パラメータは settings.py から読み込む
 from settings import *
 from scipy.signal import find_peaks
@@ -32,7 +32,7 @@ seed = 1234
 #単一音源音声 (直接音源)
 #z, fs = sf.read('music1_embedded_seed{0}.wav'.format(seed))
 # 単一音源音声 (部屋再生)
-z, fs = sf.read('music1_room_seed{0}.wav'.format(seed))
+z, fs = sf.read('./../../sound_data/music1_room_seed{0}.wav'.format(seed))
 # 複数音源-混合音声 (部屋再生)
 #z, fs = sf.read('music1_room_seed{0}&{1}.wav'.format(seeds[0], seeds[1]))
 
@@ -61,7 +61,7 @@ i_range = 20000
 win_t = sg.windows.hann(N)  # sin窓(=Hanning窓)の準備
 
 # 乱数配列を作成
-wc = presudo_random(Hb, Wb, 1, 1, seed=seed)
+wc = pseudo_random(Hb, Wb, 1, 1, seed=seed)
 
 '''---------------
     検知
