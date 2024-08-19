@@ -5,8 +5,14 @@ import pandas as pd
 import scipy as sp
 import numpy as np
 import librosa as lb
+import matplotlib as plt
 
-def Hearing_Threshold(n_fft=1024, fs=16000, bias=0, sup=20):
+n_fft=1024
+fs=16000
+bias=0
+sup=20
+
+def Hearing_Threshold(n_fft, fs, bias, sup):
 
     # n_fft : FFT点数
     # fs    : サンプリング周波数
@@ -15,9 +21,13 @@ def Hearing_Threshold(n_fft=1024, fs=16000, bias=0, sup=20):
 
     # Create Interpolated Curve
     data    = pd.read_csv('equal_loudness.csv')
+    print(f'Results: line 22 (pd.read_csv)\n{data}')
     freq    = np.array(data['frequency'])
+    print(f'Results: line 24 np.array\n{freq}')
     level   = np.array(data['level'])
+    print(f'Results: line 26 np.array\n{level}')
     curve   = sp.interpolate.CubicSpline(freq, level, bc_type='natural')
+    print(f'Results: line 28 sp.interpolate.CubicSpline\n{curve}')
 
     # Frequencies that lebel estimates
     freq_   = lb.fft_frequencies(sr=fs, n_fft=n_fft)
@@ -31,3 +41,5 @@ def Hearing_Threshold(n_fft=1024, fs=16000, bias=0, sup=20):
     Mag[0]  = 0
 
     return Mag
+
+Hearing_Threshold(n_fft, fs, bias, sup)
