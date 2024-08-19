@@ -1,4 +1,4 @@
-import numpy as np
+# settings.py
 
 '''---------------
     パラメータ設定
