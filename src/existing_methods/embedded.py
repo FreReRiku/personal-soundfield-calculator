@@ -1,13 +1,9 @@
-"""
-    オーディオ透かしの埋め込み
-    from Y. Nakashima et. al., "Indoor Positioning System Using Digital AudioWatermarking," IEICE Trans., vol.E.94-D, no.11, Nov. 2011.
-"""
+# embedded.py
 
 '''---------------
     インポート
 ---------------'''
 import os
-import urllib.request  # ファイルを読み込むためのモジュール
 import numpy as np
 # 信号処理関係
 import scipy as sp
@@ -110,11 +106,13 @@ for seed in seeds:
     _, y = sg.istft(Y, nperseg=N, noverlap=N - S, window=win_t, boundary=True)
     y = np.real(y)
     outputs.append(y)
+    print(f'yの要素数{len(y)}')
+    print(y)
 
     '''---------------
         ファイル保存
     ---------------'''
-    file_base = os.path.splitext(file_name)[0]
+    file_base = os.path.splitext(file_name)[0] # result: ./../../sound_data/music2_mono
     new_file_name = '{0}_embedded_seed{1}.wav'.format(file_base, seed)
     sf.write(new_file_name, y * 0.95 / np.max(abs(y)), fs)
 
