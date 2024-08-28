@@ -1,7 +1,4 @@
-"""
-    オーディオ透かしの検知
-    from Y. Nakashima et. al., "Indoor Positioning System Using Digital AudioWatermarking," IEICE Trans., vol.E.94-D, no.11, Nov. 2011.
-"""
+# detection.py
 
 '''---------------
     インポート
@@ -32,7 +29,7 @@ seed = 1234
 #単一音源音声 (直接音源)
 #z, fs = sf.read('music1_embedded_seed{0}.wav'.format(seed))
 # 単一音源音声 (部屋再生)
-z, fs = sf.read('./../../sound_data/music1_room_seed{0}.wav'.format(seed))
+z, fs = sf.read(f'./../../sound_data/music2_mono_embedded_seed{seed}.wav')
 # 複数音源-混合音声 (部屋再生)
 #z, fs = sf.read('music1_room_seed{0}&{1}.wav'.format(seeds[0], seeds[1]))
 
@@ -127,7 +124,7 @@ plt.ylabel("Correlation Value", fontname="MS Gothic")
 plt.xlim([0,200])
 plt.legend(loc="lower right")
 
-plt.savefig('Correlation.svg')
+plt.savefig('./figures/Correlation.svg')
 
 plt.show()
 
