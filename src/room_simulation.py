@@ -27,18 +27,22 @@ e_absorption, max_order = pra.inverse_sabine(rt60, room_dimensions)
 
 # 壁の材質を決める
 m = pra.make_materials(
-    ceiling="plasterboard",
-    floor="carpet_cotton",
-    east="plasterboard",
-    west="plasterboard",
-    north="plasterboard",
-    south="plasterboard",
+    ceiling =   "plasterboard",
+    floor   =   "carpet_cotton",
+    east    =   "plasterboard",
+    south   =   "plasterboard",
+    west    =   "plasterboard",
+    north   =   "plasterboard",
 )
 
 # 部屋をつくります
 # fsは生成されるインパルス応答のサンプリング周波数です。入力する音源があるならそれに合わせる。
 room = pra.ShoeBox(
-    room_dimensions, t0=0.0, fs=fs, materials=pra.Material(e_absorption), max_order=5
+    room_dimensions,
+    t0          =   0.0,
+    fs          =   fs,
+    materials   =   pra.Material(e_absorption),
+    max_order   =   5
 )
 
 # マイク設置
