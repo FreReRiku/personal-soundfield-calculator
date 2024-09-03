@@ -9,6 +9,7 @@ from scipy.io import wavfile
 from settings import *
 
 # wavファイル読み込み
+# seedsの数=スピーカーの数なので、この場合は2個のスピーカーから音源を流すよう指定している。
 channels = []
 for seed in seeds:
     fs, channel = wavfile.read('./../sound/source/music2_mono.wav')
