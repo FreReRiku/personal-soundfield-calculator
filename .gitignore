@@ -34,7 +34,11 @@ Temporary Items
 # srcディレクトリの中にある__pycache__ディレクトリを監視から逃れられるようにする。
 /**/__pycache__/
 
+# srcディレクトリの中にあるexplanationディレクトリを（一旦）除外
+/src/explanation/
+
 # 使用する音源データ以外のファイルを除外
 /sound_data/
 !/sound_data/music1_mono.wav
 !/sound_data/music2_mono.wav
+
