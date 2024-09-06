@@ -35,7 +35,7 @@ Temporary Items
 /**/__pycache__/
 
 # srcディレクトリの中にあるexplanationディレクトリを（一旦）除外
-/src/explanation/
+/docs
 
 # 使用する音源データ以外のファイルを除外
 /sound_data/
