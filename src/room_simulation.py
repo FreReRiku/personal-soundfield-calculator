@@ -1,4 +1,4 @@
-# proposed_room_simulation_no_embedded.py
+# room_simulation_no_embedded.py
 
 # import (settingsはsrcディレクトリ内のsettings.pyを使用)
 import numpy as np
@@ -10,13 +10,17 @@ from settings import *
 
 # wavファイル読み込み
 # seedsの数=スピーカーの数なので、この場合は2個のスピーカーから音源を流すよう指定している。
+
+print('\nroom_simulation.pyを実行します。')
+print('以下に結果を表示します（デバッグ用）')
+
 channels = []
 for seed in seeds:
-    fs, channel = wavfile.read('./../sound/source/music2_mono.wav')
+    fs, channel = wavfile.read('./../sound_data/original_sound_source/music2_mono.wav')
     channels.append(channel)
 
-print(f'サンプリング周波数：{fs}')
-print(f'チャンネル数：{len(channels)}')
+print(f'サンプリング周波数：{fs}Hz')
+print(f'チャンネル数：{len(channels)}ch')
 
 # 部屋の設定
 # 残響時間と部屋の寸法
@@ -25,6 +29,9 @@ room_dimensions = [3.52, 3.52, 2.4]  # 部屋の寸法[m] ここを二次元に�
 
 # Sabineの残響式から壁面の平均吸音率と鏡像法での反射回数の上限を決めます
 e_absorption, max_order = pra.inverse_sabine(rt60, room_dimensions)
+
+print(f'壁のエネルギー吸収：{e_absorption}')
+print(f'鏡像法での反射回数の上限：{max_order}回')
 
 # 壁の材質を決める
 m = pra.make_materials(
@@ -40,10 +47,9 @@ m = pra.make_materials(
 # fsは生成されるインパルス応答のサンプリング周波数です。入力する音源があるならそれに合わせる。
 room = pra.ShoeBox(
     room_dimensions,
-    t0          =   0.0,
     fs          =   fs,
-    materials   =   pra.Material(e_absorption),
-    max_order   =   5
+    materials   =   m, # 変更前: pra.Material(e_absorption)
+    max_order   =   max_order # 変更前: 5
 )
 
 # マイク設置
@@ -66,25 +72,31 @@ ax.set_zlim([0, 2.5])
 # インパルス応答を計算
 room.compute_rir()
 # インパルス応答を保存
+
 for i, ir_ in enumerate(room.rir):
     for j, ir in enumerate(ir_):
         ir_signal = ir
         ir_signal /= np.max(np.abs(ir_signal)) # 可視化のため正規化
-        sf.write('impulse_mic{0}_ch{1}.wav'.format(i+1,j+1), ir_signal, fs)
+        sf.write(f'../sound_data/room_simulation/impulse_mic{i+1}_ch{j+1}.wav', ir_signal, fs)
+
 
 # シミュレーション
 separate_recordings = room.simulate(return_premix=True)
+print(type(separate_recordings))
+print(separate_recordings)
 
 # 各音源のみを再生した音を保存
 for i, sound in enumerate(separate_recordings):
+    print(list(enumerate(separate_recordings)))
+    print(i)
     recorded        = sound[0, :]
-    writefilename   = "music2_room_seed{0}.wav".format(seeds[i])
-    sf.write(writefilename, recorded / np.max(recorded) * 0.95, fs)
+    sf.write(f'../sound_data/room_simulation/music2_room_ch{seeds[i]}.wav',
+             recorded / np.max(recorded) * 0.95,
+             fs)
 
 # ミックスされた音源を保存
 mixed_recorded  = np.sum(separate_recordings, axis=0)[0,:]
-writefilename = "music2_room_seed{0}&{1}.wav".format(seeds[0], seeds[1])
-sf.write(writefilename, mixed_recorded / np.max(mixed_recorded) * 0.95, fs)
+sf.write('../sound_data/room_simulation/music2_room_mix.wav', mixed_recorded / np.max(mixed_recorded) * 0.95, fs)
 
 # 図示
 plt.show()
