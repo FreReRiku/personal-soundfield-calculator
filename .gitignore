@@ -42,3 +42,6 @@ Temporary Items
 !/sound_data/music1_mono.wav
 !/sound_data/music2_mono.wav
 
+# TODO_LISTディレクトリを除外
+/TODO_LIST/
+
