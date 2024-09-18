@@ -7,6 +7,13 @@ from librosa import stft, istft, magphase, resample
 from scipy.signal import find_peaks
 from scipy.fft import rfft, irfft, fftshift
 
+
+'''---------------
+ 解析に用いる音源の選択
+ 1か2を変数の値に代入してください
+---------------'''
+music_type = 1
+
 '''---------------
     パラメータ
 ---------------'''
@@ -37,22 +44,21 @@ for b in emb_bin:
     TH  = 0.2       # CSPの最大値に対するノイズと判定する振幅比のしきい値
 
     # 確認用の表示
-    print('')
-    print('[ 設定条件 ]')
-    print(' - ゼロを埋め込む周波数ビンの数：{0}bin/{1}bin中'.format(D, N+1))
-    print(' - １回の検知で埋め込むフレーム数：{0}フレーム'.format(K))
-    print(' - 試行回数：{0}回'.format(len(start_frame_pos)))
-    print('')
+    print('\n[ 設定条件 ]')
+    print(f' - ゼロを埋め込む周波数ビンの数：{D}bin/{N+1}bin中')
+    print(f' - １回の検知で埋め込むフレーム数：{K}フレーム')
+    print(f' - 試行回数：{len(start_frame_pos)}回\n')
 
     '''---------------
         オーディオファイルの読み込み
     ---------------'''
     # ファイル名
-    file_name_impulse1  = 'impulse_mic1_ch1.wav'
-    file_name_impulse2  = 'impulse_mic1_ch2.wav'
-    file_name_origin    = 'music1_mono.wav'
-    file_name_received1 = 'music1_room_seed1.wav'
-    file_name_received2 = 'music1_room_seed1234.wav'
+    file_name_impulse1  = '../sound_data/room_simulation/impulse_mic1_ch1.wav'
+    file_name_impulse2  = '../sound_data/room_simulation/impulse_mic1_ch2.wav'
+    file_name_origin    = f'../sound_data/original_sound_source/music{music_type}_mono.wav'
+    file_name_received1 = f'../sound_data/room_simulation/music{music_type}_room_seed1.wav'
+    file_name_received2 = f'../sound_data/room_simulation/music{music_type}_room_seed1234.wav'
+
     # 読み込み
     h1, _   = sf.read(file_name_impulse1)
     h2, _   = sf.read(file_name_impulse2)
@@ -310,9 +316,8 @@ for b in emb_bin:
     CSP_emb_wtd_log = np.array(CSP_emb_wtd_log)     # 重み付き差分CSP
 
     print('[ マイク・スピーカ距離・到来時間 ]')
-    print(' - スピーカ１：{0:.2f}[m] , {1:.2f}[ms]'.format(pos_imp[0]/fs*c, 1000*pos_imp[0]/fs))
-    print(' - スピーカ２：{0:.2f}[m] , {1:.2f}[ms]'.format(pos_imp[1]/fs*c, 1000*pos_imp[1]/fs))
-    print('')
+    print(f' - スピーカ１：{pos_imp[0]/fs*c:.2f}[m] , {1000*pos_imp[0]/fs:.2f}[ms]')
+    print(f' - スピーカ２：{pos_imp[1]/fs*c:.2f}[m] , {1000*pos_imp[1]/fs:.2f}[ms]\n')
 
     '''---------------
         遅延量推定精度
@@ -350,6 +355,11 @@ for b in emb_bin:
 
     '''---------------
         Peak Ratio (真のピークと第２ピークの比) の計算
+
+        Peak Ratio について
+        - Peak Ratioが1を超えると正しく検知できる.
+        - Peak Ratioが大きいほどノイズ耐性に頑健になる.
+        - PR < 1 のとき、遅延推定に誤りが生じる
     ---------------'''
 
     PR_log = []
@@ -373,12 +383,9 @@ for b in emb_bin:
     PR_log = np.array(PR_log)
 
     print('[ ピーク比(PR) ]')
-    print('  PRが1を超えると正しく検知できる．大きいほどノイズ耐性に頑健になる．')
-    print('  PR < 1 のとき、遅延推定に誤りが生じる')
-    print(' - 平均PR: {0:.2f}'.format(np.mean(PR_log)))
-    print(' - 最小PR: {0:.2f}'.format(np.min(PR_log)))
-    print(' - 正しく検知できる確率: {0:.3f}'.format(PR_log[PR_log >= 1].size / PR_log.size))
-    print('')
+    print(f' - 平均PR: {np.mean(PR_log):.2f}')
+    print(f' - 最小PR: {np.min(PR_log):.2f}')
+    print(f' - 正しく検知できる確率: {PR_log[PR_log >= 1].size / PR_log.size:.3f}\n')
 
     '''---------------
         音質評価
@@ -393,8 +400,8 @@ for b in emb_bin:
     # SNR
     snr = 20 * np.log10(sum(y1_org ** 2) / sum((y1_org - y1_emb) ** 2))
     print('[ 音質 ]')
-    print(' - PESQ :  {0:.2f}'.format(score))
-    print(' - SNR  :  {0:.2f} [dB]'.format(snr))
+    print(f' - PESQ :  {score:.2f}')
+    print(f' - SNR  :  {snr:.2f} [dB]')
 
     pesq_log.append(score)
 
@@ -435,3 +442,4 @@ ax2.legend(lines1+lines2, labels1+labels2, loc='upper left')
 plt.savefig('bin.svg')
 
 plt.show()
+
