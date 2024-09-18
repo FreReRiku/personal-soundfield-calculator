@@ -1,3 +1,6 @@
+# dte_data.py
+
+
 import librosa
 import matplotlib.pyplot as plt
 import numpy as np
@@ -6,6 +9,13 @@ from pesq import pesq
 from librosa import stft, istft, magphase, resample
 from scipy.signal import find_peaks
 from scipy.fft import rfft, irfft, fftshift
+
+
+'''---------------
+ 解析に用いる音源の選択
+ 1か2を変数の値に代入してください
+---------------'''
+music_type = 1
 
 '''---------------
     パラメータ
@@ -49,11 +59,11 @@ for f in emb_frame:
         オーディオファイルの読み込み
     ---------------'''
     # ファイル名
-    file_name_impulse1  = 'impulse_mic1_ch1.wav'
-    file_name_impulse2  = 'impulse_mic1_ch2.wav'
-    file_name_origin    = 'music1_mono.wav'
-    file_name_received1 = 'music1_room_seed1.wav'
-    file_name_received2 = 'music1_room_seed1234.wav'
+    file_name_impulse1  = '../sound_data/room_simulation/impulse_mic1_ch1.wav'
+    file_name_impulse2  = '../sound_data/room_simulation/impulse_mic1_ch2.wav'
+    file_name_origin    = f'../sound_data/original_sound_source/music{music_type}_mono.wav'
+    file_name_received1 = f'../sound_data/room_simulation/music{music_type}_room_seed1.wav'
+    file_name_received2 = f'../sound_data/room_simulation/music{music_type}_room_seed1234.wav'
     # 読み込み
     h1, _   = sf.read(file_name_impulse1)
     h2, _   = sf.read(file_name_impulse2)
@@ -351,6 +361,11 @@ for f in emb_frame:
 
     '''---------------
         Peak Ratio (真のピークと第２ピークの比) の計算
+
+        Peak Ratio について
+        - Peak Ratioが1を超えると正しく検知できる.
+        - Peak Ratioが大きいほどノイズ耐性に頑健になる.
+        - PR < 1 のとき、遅延推定に誤りが生じる
     ---------------'''
 
     PR_log = []
@@ -374,12 +389,9 @@ for f in emb_frame:
     PR_log = np.array(PR_log)
 
     print('[ ピーク比(PR) ]')
-    print('  PRが1を超えると正しく検知できる．大きいほどノイズ耐性に頑健になる．')
-    print('  PR < 1 のとき、遅延推定に誤りが生じる')
-    print(' - 平均PR: {0:.2f}'.format(np.mean(PR_log)))
-    print(' - 最小PR: {0:.2f}'.format(np.min(PR_log)))
-    print(' - 正しく検知できる確率: {0:.3f}'.format(PR_log[PR_log >= 1].size / PR_log.size))
-    print('')
+    print(f' - 平均PR: {np.mean(PR_log):.2f}')
+    print(f' - 最小PR: {np.min(PR_log):.2f}')
+    print(f' - 正しく検知できる確率: {PR_log[PR_log >= 1].size / PR_log.size:.3f}\n')
 
     '''---------------
         音質評価
@@ -394,8 +406,8 @@ for f in emb_frame:
     # SNR
     snr = 20 * np.log10(sum(y1_org ** 2) / sum((y1_org - y1_emb) ** 2))
     print('[ 音質 ]')
-    print(' - PESQ :  {0:.2f}'.format(score))
-    print(' - SNR  :  {0:.2f} [dB]'.format(snr))
+    print(f' - PESQ :  {score:.2f}')
+    print(f' - SNR  :  {snr:.2f} [dB]')
 
     pesq_log.append(score)
 
@@ -479,3 +491,4 @@ ax2.legend(lines1+lines2, labels1+labels2, loc='upper right')
 plt.savefig('frame.svg')
 
 plt.show()
+
