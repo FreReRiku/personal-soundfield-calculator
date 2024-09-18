@@ -1,3 +1,8 @@
+# delay_time_estimation.py
+
+## インパルス応答のプロット
+## 平均CSP(埋込周波数)のプロット
+
 import librosa
 import matplotlib.pyplot as plt
 import numpy as np
@@ -6,6 +11,13 @@ from pesq import pesq
 from librosa import stft, istft, magphase, resample
 from scipy.signal import find_peaks
 from scipy.fft import rfft, irfft, fftshift
+
+
+'''---------------
+ 解析に用いる音源の選択
+ 1か2を変数の値に代入してください
+---------------'''
+music_type = 1
 
 '''---------------
     パラメータ
@@ -28,22 +40,22 @@ start_frame_pos = np.arange(0, Tn*3, 3)  # スタートのフレーム位置(こ
 TH  = 0.2       # CSPの最大値に対するノイズと判定する振幅比のしきい値
 
 # 確認用の表示
-print('')
-print('[ 設定条件 ]')
-print(' - ゼロを埋め込む周波数ビンの数：{0}bin/{1}bin中'.format(D, N+1))
-print(' - １回の検知で埋め込むフレーム数：{0}フレーム'.format(K))
-print(' - 試行回数：{0}回'.format(len(start_frame_pos)))
-print('')
+print('\n[ 設定条件 ]')
+print(f' - ゼロを埋め込む周波数ビンの数：{D}bin/{N+1}bin中')
+print(f' - １回の検知で埋め込むフレーム数：{K}フレーム')
+print(f' - 試行回数：{len(start_frame_pos)}回\n')
 
 '''---------------
     オーディオファイルの読み込み
 ---------------'''
+
 # ファイル名
-file_name_impulse1  = 'impulse_mic1_ch1.wav'
-file_name_impulse2  = 'impulse_mic1_ch2.wav'
-file_name_origin    = 'music1_mono.wav'
-file_name_received1 = 'music1_room_seed1.wav'
-file_name_received2 = 'music1_room_seed1234.wav'
+file_name_impulse1  = '../sound_data/room_simulation/impulse_mic1_ch1.wav'
+file_name_impulse2  = '../sound_data/room_simulation/impulse_mic1_ch2.wav'
+file_name_origin    = f'../sound_data/original_sound_source/music{music_type}_mono.wav'
+file_name_received1 = f'../sound_data/room_simulation/music{music_type}_room_seed1.wav'
+file_name_received2 = f'../sound_data/room_simulation/music{music_type}_room_seed1234.wav'
+
 # 読み込み
 h1, _   = sf.read(file_name_impulse1)
 h2, _   = sf.read(file_name_impulse2)
@@ -76,11 +88,13 @@ Y1zero  = stft(y1, n_fft=2*N, hop_length=S, win_length=2*N, center=False)
 CSP0_log, CSP_log, CSP1_log, CSP2_log, CSP_emb_log, CSP_sub_log, CSP_wtd_log , CSP_emb_sub_log, CSP_emb_wtd_log = [], [], [], [], [], [], [], [], []
 CC_log = []
 
-# Top Position d の推定
+# ここから推定のための処理に入ります
 for k in start_frame_pos:
 
+    # C0ないしTop Position d の推定
     '''---------------
         0. CSP0
+        2つのスピーカーから音が再生され、初めてマイクに到来する時間dを推定します。
     ---------------'''
     # マイク入力音声のスペクトログラム
     Yspec = Y1spec + Y2spec
@@ -105,7 +119,7 @@ for k in start_frame_pos:
     #  CSP0_log     = np.array(CSP0_log)         # CSP0
 
     # dを推定
-    d = (np.argmax(CSP0_log)-25)
+    d = (np.argmax(CSP0_log)-25)                # なんで25引いとるんや...
 
 #  print(d)
 
@@ -127,11 +141,11 @@ x       = x[st-d:ed-d]
 Xspec   = stft(x, n_fft=2*N, hop_length=S, win_length=N, center=False)
 
 for k in start_frame_pos:
-    
+
     # 埋め込み用の配列
     Y1emb   = np.copy(Y1spec)
     Y2emb   = np.copy(Y2spec)
-    
+
     '''---------------
         1. CSP1
     ---------------'''
@@ -145,7 +159,7 @@ for k in start_frame_pos:
     XYamp[XYamp < eps] = eps                # 分母がほぼ0になるのを防止
     CSP_sp      = XY/XYamp                  # 白色化相互相関(周波数領域)
     CSP1         = np.mean(CSP_sp, axis=1)   # 時間方向で平均
-    CSP1_ave     = irfft(CSP1, axis=0)        # 逆STFT
+    CSP1_ave     = irfft(CSP1, axis=0)        # 逆STFT （逆STFTならistftじゃね...?）
 
     # CSPの整形
     CSP1_ave     = CSP1_ave[:N]               # いらない後半部を除去
@@ -206,13 +220,13 @@ for k in start_frame_pos:
     CSP_sp      = XY/XYamp                  # 白色化相互相関(周波数領域)
     CSP2         = np.mean(CSP_sp, axis=1)   # 時間方向で平均
     CSP2_ave     = irfft(CSP2, axis=0)        # 逆STFT
-    
+
     # CSPの整形
     CSP2_ave     = CSP2_ave[:N]               # いらない後半部を除去
     CSP2_ave     = CSP2_ave/np.max(CSP2_ave)   # 最大で割り算
 
     '''---------------
-        5. 埋め込み信号を利用したCSP(埋込周波数のみ)の計算
+        6. 埋め込み信号を利用したCSP(埋込周波数のみ)の計算
     ---------------'''
     CSP2_emb = np.zeros_like(CSP2)
     CSP2_emb[embedded_freq]     = CSP2[embedded_freq]
@@ -223,7 +237,7 @@ for k in start_frame_pos:
     CSP2_emb_ave = CSP2_emb_ave / np.max(CSP2_emb_ave)  # 最大で割り算
 
     '''---------------
-        6. 重み付け差分CSP(埋込周波数のみ)用の重み計算
+        7. 重み付け差分CSP(埋込周波数のみ)用の重み計算
     ---------------'''
     # CSPのピーク位置を計算
     pk_csp, _ = find_peaks(CSP1_emb_ave, threshold=0.01)
@@ -244,7 +258,7 @@ for k in start_frame_pos:
     weight = weight / np.max(np.abs(weight))  # 正規化
 
     '''---------------
-        7. 重み付け差分CSP(埋込周波数のみ)による遅延推定
+        8. 重み付け差分CSP(埋込周波数のみ)による遅延推定
     ---------------'''
     # CSPの差分
     CSP_emb_sub     = CSP1_emb_ave - CSP2_emb_ave     # CSPの差分
@@ -258,7 +272,7 @@ for k in start_frame_pos:
     # plt.plot(CSP_ave, 'lightgray')
     # plt.plot(CSP_wt)
     # plt.show()
-    
+
     # ログに溜め込む
     CSP_log.append(CSP1_ave)
     CSP_emb_log.append(CSP2_ave)
@@ -277,14 +291,13 @@ CSP_sub_log = np.array(CSP_sub_log)     # 差分CSP
 CSP_wtd_log = np.array(CSP_wtd_log)     # 重み付き差分CSP
 CSP1_log     = np.array(CSP1_log)       # CSP1(埋込周波数のみ)
 CSP2_log     = np.array(CSP2_log)       # CSP2(埋込周波数のみ)
-CSP_emb_sub_log = np.array(CSP_emb_sub_log)     # 差分CSP
-CSP_emb_wtd_log = np.array(CSP_emb_wtd_log)     # 重み付き差分CSP
+CSP_emb_sub_log = np.array(CSP_emb_sub_log)     # 埋込差分CSP
+CSP_emb_wtd_log = np.array(CSP_emb_wtd_log)     # 埋込重み付き差分CSP
 CC_log     = np.array(CC_log)
 
 print('[ マイク・スピーカ距離・到来時間 ]')
-print(' - スピーカ１：{0:.2f}[m] , {1:.2f}[ms]'.format(pos_imp[0]/fs*c, 1000*pos_imp[0]/fs))
-print(' - スピーカ２：{0:.2f}[m] , {1:.2f}[ms]'.format(pos_imp[1]/fs*c, 1000*pos_imp[1]/fs))
-print('')
+print(f' - スピーカ1：{pos_imp[0]/fs*c:.2f}[m] , {1000*pos_imp[0]/fs:.2f}[ms]')
+print(f' - スピーカ2：{pos_imp[1]/fs*c:.2f}[m] , {1000*pos_imp[1]/fs:.2f}[ms]\n')
 
 '''
 newlist = sorted(embedded_freq)
@@ -332,12 +345,16 @@ for delay in Delay:
 error = np.mean(np.array(error))
 delay_time_error = error / fs
 print('[ 推定誤差 ]')
-print('平均到来時間推定誤差: {0:.2f} [ms]'.format(1000 * delay_time_error))
-print('平均距離推定誤差: {0:.2f} [m]'.format(delay_time_error * c))  # 音速掛ける
-print('')
+print(f'平均到来時間推定誤差: {1000*delay_time_error:.2f} [ms]')
+print(f'平均距離推定誤差: {delay_time_error*c:.2f} [m]\n')  # 音速掛ける
 
 '''---------------
     Peak Ratio (真のピークと第２ピークの比) の計算
+
+    Peak Ratio について
+    - Peak Ratioが1を超えると正しく検知できる．
+    - Peak Ratioが大きいほどノイズ耐性に頑健になる.
+    - PR < 1 のとき、遅延推定に誤りが生じる
 ---------------'''
 
 PR_log = []
@@ -360,13 +377,10 @@ for csp2, delay in zip(CSP_emb_wtd_log, Delay):
 
 PR_log = np.array(PR_log)
 
-print('[ ピーク比(PR) ]')
-print('  PRが1を超えると正しく検知できる．大きいほどノイズ耐性に頑健になる．')
-print('  PR < 1 のとき、遅延推定に誤りが生じる')
-print(' - 平均PR: {0:.2f}'.format(np.mean(PR_log)))
-print(' - 最小PR: {0:.2f}'.format(np.min(PR_log)))
-print(' - 正しく検知できる確率: {0:.3f}'.format(PR_log[PR_log >= 1].size / PR_log.size))
-print('')
+print('[ ピーク比(PR: Peak Ratio) ]')
+print(f' - 平均PR: {np.mean(PR_log):.2f}')
+print(f' - 最小PR: {np.min(PR_log):.2f}')
+print(f' - 正しく検知できる確率: {PR_log[PR_log >= 1].size / PR_log.size:.3f}\n')
 
 '''---------------
     音質評価
@@ -379,10 +393,10 @@ y1_org      = resample(y1_org, orig_sr=fs, target_sr=16000)
 y1_emb      = resample(y1_emb, orig_sr=fs, target_sr=16000)
 score       = pesq(16000, y1_org, y1_emb)
 # SNR
-snr         = 20*np.log10(sum(y1_org**2)/sum((y1_org-y1_emb)**2)) 
+snr         = 20*np.log10(sum(y1_org**2)/sum((y1_org-y1_emb)**2))
 print('[ 音質 ]')
-print(' - PESQ :  {0:.2f}'.format(score))
-print(' - SNR  :  {0:.2f} [dB]'.format(snr))
+print(f' - PESQ :  {score:.2f}')
+print(f' - SNR  :  {snr:.2f} [dB]\n')
 
 '''---------------
     プロット
@@ -449,3 +463,4 @@ _, y_max = ax3.get_ylim()
 ax3.set_ylim([0, y_max])
 
 plt.show()
+
