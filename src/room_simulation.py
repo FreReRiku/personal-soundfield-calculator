@@ -82,7 +82,7 @@ for i, ir_ in enumerate(room.rir):
     for j, ir in enumerate(ir_):
         ir_signal = ir
         ir_signal /= np.max(np.abs(ir_signal)) # 可視化のため正規化
-        sf.write(f'../sound_data/room_simulation/impulse_mic{i+1}_seed{j+1}.wav', ir_signal, fs)
+        sf.write(f'../sound_data/room_simulation/impulse_mic{i+1}_ch{j+1}.wav', ir_signal, fs)
 
 
 # シミュレーション
