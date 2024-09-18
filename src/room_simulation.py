@@ -11,12 +11,17 @@ from settings import *
 # wavファイル読み込み
 # seedsの数=スピーカーの数なので、この場合は2個のスピーカーから音源を流すよう指定している。
 
+# music1かmusic2か選択する
+# 以下の値に1か2を入力してください
+
+music_type = 2
+
 print('\nroom_simulation.pyを実行します。')
 print('以下に結果を表示します（デバッグ用）')
 
 channels = []
 for seed in seeds:
-    fs, channel = wavfile.read('./../sound_data/original_sound_source/music2_mono.wav')
+    fs, channel = wavfile.read(f'./../sound_data/original_sound_source/music{music_type}_mono.wav')
     channels.append(channel)
 
 print(f'サンプリング周波数：{fs}Hz')
@@ -77,7 +82,7 @@ for i, ir_ in enumerate(room.rir):
     for j, ir in enumerate(ir_):
         ir_signal = ir
         ir_signal /= np.max(np.abs(ir_signal)) # 可視化のため正規化
-        sf.write(f'../sound_data/room_simulation/impulse_mic{i+1}_ch{j+1}.wav', ir_signal, fs)
+        sf.write(f'../sound_data/room_simulation/impulse_mic{i+1}_seed{j+1}.wav', ir_signal, fs)
 
 
 # シミュレーション
@@ -90,13 +95,14 @@ for i, sound in enumerate(separate_recordings):
     print(list(enumerate(separate_recordings)))
     print(i)
     recorded        = sound[0, :]
-    sf.write(f'../sound_data/room_simulation/music2_room_ch{seeds[i]}.wav',
+    sf.write(f'../sound_data/room_simulation/music{music_type}_room_seed{seeds[i]}.wav',
              recorded / np.max(recorded) * 0.95,
              fs)
 
 # ミックスされた音源を保存
 mixed_recorded  = np.sum(separate_recordings, axis=0)[0,:]
-sf.write('../sound_data/room_simulation/music2_room_mix.wav', mixed_recorded / np.max(mixed_recorded) * 0.95, fs)
+sf.write(f'../sound_data/room_simulation/music{music_type}_room_mix.wav', mixed_recorded / np.max(mixed_recorded) * 0.95, fs)
 
 # 図示
 plt.show()
+
