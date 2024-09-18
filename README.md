@@ -1,4 +1,4 @@
-# THE_STUDY - 音響解析研究リポジトリ -
+# PERSONAL-SOUNDFIELD-CALCULATOR - 音響解析研究リポジトリ -
 
 このリポジトリは、音響データの研究及び分析を目的としています。
 
@@ -10,6 +10,7 @@
 
 - `src/` : このディレクトリには、音声データの処理と分析に使用されるPythonソースコードが含まれています。
 - `sound_data/` : このディレクトリには、`src/` ディレクトリのスクリプトで使用されるWAV形式の音声ファイルが格納されています。
+- `doc/` : このディレクトリにはソースコードに関するドキュメントが格納されています。
 
 ## はじめに
 
@@ -17,12 +18,20 @@
 
 はじめにシステムにPythonがインストールされていることを確認してください。
 
-加えて、このディレクトリでは `numpy`, `scipy`, `matplotlib`, `pyroomacoustics` を使用します。
+加えて、このディレクトリでは
+- `scipy`
+- `numpy`
+- `matplotlib`
+- `pyroomacoustics`
+- `librosa`
+- `soundfile`
+
+を使用します。
 
 これらはpipを使用してインストールできます：
 
 ```bash
-pip install numpy scipy matplotlib pyroomacoustics
+pip install scipy numpy matplotlib pyroomacoustics pyroomacoustics librosa soundfile
 ```
 
 #### スクリプトの実行
@@ -37,3 +46,4 @@ python script_name.py #各自、実行したいスクリプトの名前に置き
 #### 音源データ
 
 音源データを解析に用いる場合は、スクリプト内のパスがこのディレクトリ内のデータファイルを正しく指していることを確認してください。
+
