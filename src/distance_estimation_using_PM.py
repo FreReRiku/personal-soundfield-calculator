@@ -54,11 +54,11 @@ for num, phase in enumerate(emb_phase):
         オーディオファイルの読み込み
     ---------------'''
     # ファイル名
-    file_name_impulse1  = 'sound_data/room_simulation/impulse_mic1_ch1.wav'
-    file_name_impulse2  = 'sound_data/room_simulation/impulse_mic1_ch2.wav'
-    file_name_origin    = f'sound_data/original_sound_source/music{music_type}_mono.wav'
-    file_name_received1 = f'sound_data/room_simulation/music{music_type}_room_seed1.wav'
-    file_name_received2 = f'sound_data/room_simulation/music{music_type}_room_seed1234.wav'
+    file_name_impulse1  = '../sound_data/room_simulation/impulse_mic1_ch1.wav'
+    file_name_impulse2  = '../sound_data/room_simulation/impulse_mic1_ch2.wav'
+    file_name_origin    = f'../sound_data/original_sound_source/music{music_type}_mono.wav'
+    file_name_received1 = f'../sound_data/room_simulation/music{music_type}_room_seed1.wav'
+    file_name_received2 = f'../sound_data/room_simulation/music{music_type}_room_seed1234.wav'
     # 読み込み
     h1, _   = sf.read(file_name_impulse1)
     h2, _   = sf.read(file_name_impulse2)
@@ -396,7 +396,7 @@ for num, phase in enumerate(emb_phase):
     frames = min([Y1spec.shape[1], Y1zero.shape[1]])
     y1_org = istft(Y1spec[:,:frames], hop_length=S)
     y1_emb = istft(Y1zero[:,:frames], hop_length=S)
-    
+
     # PESQ
     y1_org_ds = resample(y1_org[:fs*5], orig_sr=fs, target_sr=16000)
     y1_emb_ds = resample(y1_emb[:fs*5], orig_sr=fs, target_sr=16000)
@@ -408,8 +408,8 @@ for num, phase in enumerate(emb_phase):
     print(f' - SNR  :  {snr:.2f} [dB]')
 
     pesq_log.append(score)
-    
-    sf.write('sound_data/PM_output_sound/embded_music{0}_pahse={1:.1f}.wav'.format(music_type, phase), y1_emb, fs)
+
+    sf.write(f'../sound_data/PM_output_sound/embedded_music{music_type}_phase={phase:.1f}.wav', y1_emb, fs)
 
 dte_log = np.array(dte_log)
 print(dte_log)
@@ -445,6 +445,6 @@ lines1, labels1 = ax1.get_legend_handles_labels()
 lines2, labels2 = ax2.get_legend_handles_labels()
 ax2.legend(lines1+lines2, labels1+labels2, loc='lower right')
 
-plt.savefig('Phase_vs_PESQ.png')
+plt.savefig('../figures/distance_estimation_using_PM/Phase_vs_PESQ.png')
 plt.show()
 
