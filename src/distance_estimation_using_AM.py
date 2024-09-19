@@ -190,10 +190,10 @@ for num, amp in enumerate(emb_amp):
         CSP1_emb_ave     = CSP1_emb_ave/np.max(CSP1_emb_ave)   # 最大で割り算
 
         '''---------------
-            4. ゼロ埋め込み
+            4. 振幅変調
         ---------------'''
-        # Y1 に対してゼロを埋め込み
-        Y1emb[embedded_freq, :] = amp * Y1emb[embedded_freq, :]        # embedded_freqの周波数ビンのみ０に
+        # Y1 に対して振幅変調を行う
+        Y1emb[embedded_freq, :] = amp * Y1emb[embedded_freq, :]        # embedded_freqの周波数ビンにamp倍
         Yspec   = Y1emb + Y2spec
 
         # 音質検査用
