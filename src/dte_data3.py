@@ -439,7 +439,7 @@ lines2, labels2 = ax2.get_legend_handles_labels()
 ax2.legend(lines1+lines2, labels1+labels2, loc='upper left')
 
 
-plt.savefig('bin.svg')
+plt.savefig('../figures/dte_data3/bin.svg')
 
 plt.show()
 
