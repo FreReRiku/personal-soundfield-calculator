@@ -124,7 +124,7 @@ plt.ylabel("Correlation Value", fontname="MS Gothic")
 plt.xlim([0,200])
 plt.legend(loc="lower right")
 
-plt.savefig('../figures/Correlation.svg')
+# plt.savefig('../figures/Correlation.svg')
 
 plt.show()
 
