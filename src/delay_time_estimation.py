@@ -415,7 +415,7 @@ ax.set_ylabel("Amplitude")
 ax.set_title('Impulse')
 ax.set_xlim([1000*t[0], 1000*t[-1]])
 
-plt.savefig('impulse.svg')
+plt.savefig('../figures/delay_time_estimation/impulse.svg')
 
 #-------------------------
 # 平均CSP(埋込周波数)のプロット
@@ -461,6 +461,8 @@ ax3.set_title("Weighted Difference-CSP")
 ax3.set_xlim([1000*t[0], 1000*t[-1]])
 _, y_max = ax3.get_ylim()
 ax3.set_ylim([0, y_max])
+
+plt.savefig('../figures/delay_time_estimation/CSP.svg')
 
 plt.show()
 
