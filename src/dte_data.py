@@ -27,7 +27,8 @@ N   = 1024
 S   = 512
 
 emb_amp = np.arange(0.0, 1.0, 0.05)
-dte_log = [] pesq_log = []
+dte_log = []
+pesq_log = []
 
 for e in emb_amp:
 
@@ -438,7 +439,6 @@ lines1, labels1 = ax1.get_legend_handles_labels()
 lines2, labels2 = ax2.get_legend_handles_labels()
 ax2.legend(lines1+lines2, labels1+labels2, loc='upper left')
 
-plt.savefig('AnpPESQ.svg')
+plt.savefig('./figures/dte_data/emb_amp_PESQ.svg')
 
 plt.show()
-
